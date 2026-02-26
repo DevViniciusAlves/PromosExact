@@ -1,0 +1,41 @@
+package com.exactpromos.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public class Promocao {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    private Produto produto;
+
+    @Column(nullable = false)
+    private BigDecimal precoPromocional;
+
+    @Column(nullable = false)
+    private Integer descontoPercentual;
+
+    private LocalDateTime dataInicio;
+
+    private LocalDateTime dataFim;
+
+    @NotBlank
+    private String linkAfiliado;
+
+    @Column(nullable = false)
+    private BigDecimal cashback;
+
+    private Boolean ativa;
+
+    @Column(nullable = false)
+    private Integer visualizacoes;
+
+    @Column(nullable = false)
+    private Integer cliques;
+}

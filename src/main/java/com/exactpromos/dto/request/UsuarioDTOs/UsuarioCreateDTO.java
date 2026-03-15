@@ -17,7 +17,7 @@ public class UsuarioCreateDTO {
 
     @NotBlank(message = "Obrigatório")
     @Column(unique = true)
-    private String telagramId;
+    private String telegramId;
 
     @NotBlank
     @Size(min = 3,max = 100, message = "Nome é obrigatorio")

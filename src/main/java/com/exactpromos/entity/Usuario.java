@@ -24,7 +24,7 @@ public class Usuario {
     private Long id;
 
     @Column(unique = true)
-    private String telagramId;
+    private String telegramId;
 
     @Column(nullable = false)
     private String nome;

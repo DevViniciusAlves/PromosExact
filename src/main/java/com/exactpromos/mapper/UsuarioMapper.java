@@ -2,6 +2,7 @@ package com.exactpromos.mapper;
 
 import com.exactpromos.dto.request.UsuarioDTOs.UsuarioCreateDTO;
 import com.exactpromos.dto.request.UsuarioDTOs.UsuarioUpdateDTO;
+import com.exactpromos.dto.response.InteresseDTOs.InteresseSimplificadoDTO;
 import com.exactpromos.dto.response.UsuarioDTOs.UsuarioDetalhadoDTO;
 import com.exactpromos.dto.response.UsuarioDTOs.UsuarioResponseDTO;
 import com.exactpromos.dto.response.UsuarioDTOs.UsuarioSimplificadoDTO;
@@ -35,7 +36,7 @@ public class UsuarioMapper {
 
     }
 
-    // Entity  > Response detalhado
+    // DTO  > Response detalhado
     public UsuarioDetalhadoDTO toDetalhadoDTO(Usuario usuario) {
 
         if (usuario == null) {
@@ -54,7 +55,7 @@ public class UsuarioMapper {
         // Converter lista entity para interrese dto
 
         if (usuario.getInteresses() != null) {
-            List<InteresseSimplicadoDTO> interresesDTO = usuario.getInteresses()
+            List<InteresseSimplicadoDTO> interreseDTO = usuario.getInteresses()
                     .stream() // tranformando em stream para processo
                     .map(interesse -> { // Para cada Interesse
                         InteresseSimplificadoDTO interessesDTO = new InteresseSimplificadoDTO();

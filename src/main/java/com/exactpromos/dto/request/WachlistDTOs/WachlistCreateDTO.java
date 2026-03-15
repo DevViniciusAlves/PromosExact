@@ -1,4 +1,4 @@
-package com.exactpromos.dto.request.WachlistDTOsl;
+package com.exactpromos.dto.request.WachlistDTOs;
 
 
 import jakarta.validation.constraints.Positive;

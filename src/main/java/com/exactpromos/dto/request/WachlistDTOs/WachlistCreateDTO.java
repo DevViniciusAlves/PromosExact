@@ -1,6 +1,7 @@
 package com.exactpromos.dto.request.WachlistDTOs;
 
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

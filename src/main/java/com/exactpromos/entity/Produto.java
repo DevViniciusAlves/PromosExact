@@ -1,6 +1,7 @@
 package com.exactpromos.entity;
 
 
+import com.exactpromos.Enum.PlataformaEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,9 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String produtoId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)  //  importante pra salva como "SHOPEE" no banco

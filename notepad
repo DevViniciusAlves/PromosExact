@@ -1,5 +1,0 @@
- PRECO_ALERTA       → Preço alvo atingido      │
-│ • VOLTA_ESTOQUE      → Produto voltou ao estoque│
-│ • NOVA_PROMOCAO      → Nova promoção encontrada │
-│ • RECOMENDACAO_IA    → IA recomendou produto    │
-│ • BLACK_FRIDAY

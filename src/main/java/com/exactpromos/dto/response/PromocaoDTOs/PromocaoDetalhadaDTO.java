@@ -1,7 +1,8 @@
 package com.exactpromos.dto.response.PromocaoDTOs;
 
-
+import com.exactpromos.dto.response.AvaliacaoDTOs.AvaliacaoResponseDTO;
 import com.exactpromos.dto.response.ProdutoDTOs.ProdutoDetalhadoDTO;
+import com.exactpromos.dto.response.StatusPromocaoDTOs.StatusPromocaoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class PromocaoDetalhadaDTO {
 
     private Long id;

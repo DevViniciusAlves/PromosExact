@@ -1,7 +1,9 @@
 package com.exactpromos.dto.request.UsuarioDTOs;
 
+import com.exactpromos.Enum.PerfilEnum;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,5 +30,5 @@ public class UsuarioCreateDTO {
     private String nomeDeUsuario;
 
     @NotNull
-    private perfilEnum perfil;
+    private PerfilEnum perfil;
 }

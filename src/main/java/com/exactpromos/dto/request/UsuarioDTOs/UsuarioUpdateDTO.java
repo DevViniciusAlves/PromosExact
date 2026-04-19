@@ -1,5 +1,6 @@
 package com.exactpromos.dto.request.UsuarioDTOs;
 
+import com.exactpromos.Enum.PerfilEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,9 +15,5 @@ import lombok.Setter;
 
 public class UsuarioUpdateDTO {
 
-    @NotBlank
-    @Size(min = 3,max = 100, message = "Nome é obrigatorio")
-    private String nome;
-
-    private perfilEnum perfil;
+    private PerfilEnum perfil;
 }

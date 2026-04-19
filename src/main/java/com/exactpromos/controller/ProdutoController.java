@@ -1,9 +1,11 @@
 package com.exactpromos.controller;
 
 import com.exactpromos.dto.external.MercadoLivreExternal.MercadoLivreProdutoDTO;
+import com.exactpromos.dto.request.ProdutoDTOs.ProdutoCreateDTO;
 import com.exactpromos.dto.external.ShopeeExternal.ShopeeProdutoDTO;
 import com.exactpromos.dto.response.ProdutoDTOs.ProdutoDetalhadoDTO;
 import com.exactpromos.dto.response.ProdutoDTOs.ProdutoResponseDTO;
+import jakarta.validation.Valid;
 import com.exactpromos.service.ProdutoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,10 @@ public class ProdutoController {
     @GetMapping("/{id}")
     public ProdutoDetalhadoDTO buscarProdutoPorId(@PathVariable Long id){
         return produtoService.buscarProdutoPorId(id);
+    }
+    @PostMapping
+    public ProdutoResponseDTO criarProduto(@Valid @RequestBody ProdutoCreateDTO dto){
+        return produtoService.criarProduto(dto);
     }
     @PostMapping("/shopee")
     public ProdutoResponseDTO salvarIntegracaoShopee(@RequestBody ShopeeProdutoDTO dto){

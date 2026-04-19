@@ -1,5 +1,6 @@
 package com.exactpromos.dto.request.UsuarioDTOs;
 
+import com.exactpromos.Enum.PerfilEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,10 +17,9 @@ public class UsuarioRequestDTO {
     @NotBlank(message = "Obrigatorio")
     private String telegramId;
 
-    @NotBlank@Size(min = 3,max = 100, message = "Nome é obrigatorio")
+    @NotBlank
+    @Size(min = 3, max = 100, message = "Nome e obrigatorio")
     private String nome;
 
-    private perfilEnum perfil;
-
-
+    private PerfilEnum perfil;
 }

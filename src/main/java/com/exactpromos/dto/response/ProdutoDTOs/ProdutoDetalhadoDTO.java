@@ -1,11 +1,6 @@
 package com.exactpromos.dto.response.ProdutoDTOs;
 
-
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.exactpromos.Enum.PlataformaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +12,6 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ProdutoDetalhadoDTO {
 
     private Long id;
@@ -37,9 +31,4 @@ public class ProdutoDetalhadoDTO {
     private PlataformaEnum plataforma;
 
     private Boolean emEstoque;
-
 }
-
-
-
-

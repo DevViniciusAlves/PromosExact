@@ -36,3 +36,4 @@ build/
 notepad
 notepad*
 NOTION_*.md
+**/src/main/resources/application-local.properties

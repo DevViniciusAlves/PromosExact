@@ -1,7 +1,6 @@
 package com.exactpromos.dto.request.PromocaoDTOs;
 
-
-import jakarta.validation.constraints.NotBlank;
+import com.exactpromos.Enum.PlataformaEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PromocaoFilterDTO {
 
-    @NotBlank
     private List<String> categorias;
 
     @NotNull
@@ -26,7 +24,6 @@ public class PromocaoFilterDTO {
     @NotNull
     private BigDecimal precoMaximo;
 
-    @NotBlank
     private List<PlataformaEnum> plataforma;
 
     private Boolean apenasRecomendadas;

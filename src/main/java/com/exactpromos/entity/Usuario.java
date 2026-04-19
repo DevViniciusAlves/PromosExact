@@ -1,6 +1,14 @@
 package com.exactpromos.entity;
 
-import jakarta.persistence.*;
+import com.exactpromos.Enum.PerfilEnum;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +22,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class Usuario {
 
     @Id
@@ -32,7 +38,8 @@ public class Usuario {
     private String nomeDeUsuario;
 
     @Column(nullable = false)
-    private perfilEnum perfil;
+    @Enumerated(EnumType.STRING)
+    private PerfilEnum perfil;
 
     private LocalDateTime dataCriacao;
 
@@ -42,5 +49,4 @@ public class Usuario {
 
     @Column(nullable = false)
     private String senha;
-
 }

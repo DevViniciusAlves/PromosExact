@@ -26,6 +26,7 @@ public class PromocaoMapper {
         dto.setCashback(promocao.getCashback());
         dto.setScoreQualidade(null);
         dto.setReputacaoComunitaria(null);
+        dto.setStatus(promocao.getStatus());
         dto.setLinkAfiliado(promocao.getLinkAfiliado());
         dto.setDataFim(promocao.getDataFim());
         return dto;

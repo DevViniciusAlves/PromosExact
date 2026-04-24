@@ -1,5 +1,6 @@
 package com.exactpromos.entity;
 
+import com.exactpromos.Enum.PromocaoEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,10 @@ public class Promocao {
     @Column(nullable = false)
     private BigDecimal cashback;
 
-    private Boolean ativa;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PromocaoEnum status;
 
     @Column(nullable = false)
     private Integer visualizacoes;

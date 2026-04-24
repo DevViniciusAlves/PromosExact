@@ -64,4 +64,8 @@ public class Produto {
 
     private LocalDateTime ultimaAtualizacao;
 
+    private String linkAfiliadoMl = "https://www.mercadolivre.com.br/social/ferreiravinicius20220507172242";
+
+    private String linkAfiliadoShopee = "https://s.shopee.com.br/4fsWZKK8NJ";
+
 }

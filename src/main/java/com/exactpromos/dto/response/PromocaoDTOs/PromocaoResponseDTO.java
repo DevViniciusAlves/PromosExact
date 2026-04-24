@@ -1,5 +1,6 @@
 package com.exactpromos.dto.response.PromocaoDTOs;
 
+import com.exactpromos.Enum.PromocaoEnum;
 import com.exactpromos.dto.response.ProdutoDTOs.ProdutoResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,8 @@ public class PromocaoResponseDTO {
     private String linkAfiliado;
 
     private LocalDateTime dataFim;
+
+    private PromocaoEnum status;
 
 
 }

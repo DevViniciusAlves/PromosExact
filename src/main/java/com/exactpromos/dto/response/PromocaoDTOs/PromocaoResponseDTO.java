@@ -25,8 +25,6 @@ public class PromocaoResponseDTO {
 
     private Integer descontoPercentual;
 
-    private BigDecimal cashback;
-
     private Double scoreQualidade;
 
     private Double reputacaoComunitaria;

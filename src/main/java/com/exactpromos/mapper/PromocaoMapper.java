@@ -23,7 +23,6 @@ public class PromocaoMapper {
         dto.setProduto(produtoMapper.toResponseDTO(promocao.getProduto()));
         dto.setPrecoPromocional(promocao.getPrecoPromocional());
         dto.setDescontoPercentual(promocao.getDescontoPercentual());
-        dto.setCashback(promocao.getCashback());
         dto.setScoreQualidade(null);
         dto.setReputacaoComunitaria(null);
         dto.setStatus(promocao.getStatus());

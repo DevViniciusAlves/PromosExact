@@ -2,7 +2,6 @@ package com.exactpromos.dto.request.PromocaoDTOs;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,19 +20,10 @@ public class PromocaoCreateDTO {
     private Long produtoId;
 
     @NotNull
-    @PositiveOrZero
     private BigDecimal precoPromocional;
 
     @NotNull
-    @PositiveOrZero
     private Integer descontoPercentual;
-
-    @NotNull
-    @PositiveOrZero
-    private BigDecimal cashback;
-
-    @NotBlank
-    private String linkAfiliado;
 
     private LocalDateTime dataInicio;
 

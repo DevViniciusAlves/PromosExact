@@ -40,9 +40,6 @@ public class Promocao {
     @NotBlank
     private String linkAfiliado;
 
-    @Column(nullable = false)
-    private BigDecimal cashback;
-
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

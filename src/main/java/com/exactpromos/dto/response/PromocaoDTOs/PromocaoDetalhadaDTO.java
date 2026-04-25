@@ -26,8 +26,6 @@ public class PromocaoDetalhadaDTO {
 
     private Integer descontoPercentual;
 
-    private BigDecimal cashback;
-
     private String linkAfiliado;
 
     private StatusPromocaoDTO status;

@@ -24,6 +24,9 @@ import com.exactpromos.repository.PromocaoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.util.HtmlUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -37,6 +40,8 @@ import java.util.List;
 
 @Service
 public class PromocaoService {
+
+    private static final Logger log = LoggerFactory.getLogger(PromocaoService.class);
 
     private final PromocaoRepository promocaoRepository;
     private final ProdutoRepository produtoRepository;
@@ -138,6 +143,7 @@ public class PromocaoService {
             salvarLogNotificacao(promocao, mensagem, true);
         } catch (Exception e) {
             promocao.setStatus(PromocaoEnum.ERRO_NO_ENVIO);
+            log.error("Falha ao publicar promocao id={}", promocao.getId(), e);
             salvarLogNotificacao(promocao, mensagem, false);
         }
     }
@@ -160,6 +166,8 @@ public class PromocaoService {
         NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         String precoOriginalFormatado = formatoMoeda.format(precoOriginal);
         String precoPromocionalFormatado = formatoMoeda.format(precoPromocional);
+        String nomeSeguro = HtmlUtils.htmlEscape(promocao.getProduto().getNome());
+        String linkSeguro = HtmlUtils.htmlEscape(promocao.getLinkAfiliado());
 
         String titulo;
         if (plataforma == PlataformaEnum.SHOPEE) {
@@ -173,11 +181,11 @@ public class PromocaoService {
         return String.format(
                 "%s%n%n%s%n%n De <s>%s</s> por \uD83D\uDD25 %s%n(%s%% OFF)%n%nCorre que essa oferta pode acabar a qualquer momento.%n%nLink: %s",
                 titulo,
-                promocao.getProduto().getNome(),
+                nomeSeguro,
                 precoOriginalFormatado,
                 precoPromocionalFormatado,
                 descontoPercentualCalculado,
-                promocao.getLinkAfiliado()
+                linkSeguro
         );
     }
     private void validarDuplicidadePromocao(Promocao promocao){
@@ -228,7 +236,7 @@ public class PromocaoService {
         try {
             LinkPreviewService.PreviewResultado preview = linkPreviewService.analisar(url);
             if (preview.titulo() == null || preview.preco() == null) {
-                return new PromocaoLinkResultadoDTO(url, false, "Nao foi possivel extrair titulo ou preco da pagina", null);
+                return new PromocaoLinkResultadoDTO(url, false, "Nao foi possivel processar o link informado", null);
             }
 
             String nome = preview.titulo().length() > 150 ? preview.titulo().substring(0, 150).trim() : preview.titulo();
@@ -270,7 +278,8 @@ public class PromocaoService {
             PromocaoResponseDTO promocao = criarPromocao(promocaoCreateDTO);
             return new PromocaoLinkResultadoDTO(url, true, "Processado com sucesso", promocao);
         } catch (Exception e) {
-            return new PromocaoLinkResultadoDTO(url, false, e.getMessage(), null);
+            log.error("Falha ao processar link {}", url, e);
+            return new PromocaoLinkResultadoDTO(url, false, "Nao foi possivel processar o link informado", null);
         }
     }
 
@@ -324,7 +333,8 @@ public class PromocaoService {
             PromocaoResponseDTO promocao = criarPromocao(promocaoCreateDTO);
             return new PromocaoLoteResultadoDTO(item.getProdutoId(), true, "Processado com sucesso", promocao);
         } catch (Exception e) {
-            return new PromocaoLoteResultadoDTO(item.getProdutoId(), false, e.getMessage(), null);
+            log.error("Falha ao processar item em lote produtoId={}", item.getProdutoId(), e);
+            return new PromocaoLoteResultadoDTO(item.getProdutoId(), false, "Nao foi possivel processar o item informado", null);
         }
     }
 
@@ -371,7 +381,7 @@ public class PromocaoService {
     private void salvarLogNotificacao(Promocao promocao, String mensagem, boolean enviada){
         NotificacaoLog notificacaoLog = new NotificacaoLog();
         notificacaoLog.setPromocao(promocao);
-        notificacaoLog.setMensagem(mensagem);
+        notificacaoLog.setMensagem(truncarMensagemLog(mensagem));
         notificacaoLog.setTipo(TipoNotificacao.NOVA_PROMOCAO);
         notificacaoLog.setEnviada(enviada);
         notificacaoLog.setDataEnvio(LocalDateTime.now());
@@ -379,5 +389,17 @@ public class PromocaoService {
         notificacaoLogRepository.save(notificacaoLog);
 
     }
-}
 
+    private String truncarMensagemLog(String mensagem) {
+        if (mensagem == null) {
+            return null;
+        }
+
+        String limpa = mensagem.strip();
+        if (limpa.length() <= 300) {
+            return limpa;
+        }
+
+        return limpa.substring(0, 300);
+    }
+}

@@ -26,6 +26,8 @@ public class ProdutoDetalhadoDTO {
 
     private BigDecimal precoOriginal;
 
+    private String linkAfiliado;
+
     private String urlImagem;
 
     private PlataformaEnum plataforma;

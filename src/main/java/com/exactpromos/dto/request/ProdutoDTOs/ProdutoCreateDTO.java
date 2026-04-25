@@ -48,6 +48,8 @@ public class ProdutoCreateDTO {
     @PositiveOrZero
     private BigDecimal precoOriginal;
 
+    private String linkAfiliado;
+
     @NotNull
     private Boolean emEstoque;
 }

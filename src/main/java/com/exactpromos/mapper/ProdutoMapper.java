@@ -9,6 +9,7 @@ import com.exactpromos.dto.response.ProdutoDTOs.ProdutoDetalhadoDTO;
 import com.exactpromos.dto.response.ProdutoDTOs.ProdutoResponseDTO;
 import com.exactpromos.dto.response.ProdutoDTOs.ProdutoSimplificadoDTO;
 import com.exactpromos.entity.Produto;
+import com.exactpromos.service.LinkAfiliadoService;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,6 +19,12 @@ import java.util.List;
 
 @Component
 public class ProdutoMapper {
+
+    private final LinkAfiliadoService linkAfiliadoService;
+
+    public ProdutoMapper(LinkAfiliadoService linkAfiliadoService) {
+        this.linkAfiliadoService = linkAfiliadoService;
+    }
 
     public ProdutoResponseDTO toResponseDTO(Produto produto) {
         if (produto == null) {
@@ -31,6 +38,7 @@ public class ProdutoMapper {
         dto.setMarca(produto.getMarca());
         dto.setPrecoAtual(produto.getPrecoAtual());
         dto.setDescontoPercentual(produto.getDescontoPercentual());
+        dto.setLinkAfiliado(produto.getLinkAfiliado());
         dto.setUrlImagem(produto.getUrlImagem());
         dto.setPlataforma(produto.getPlataforma());
         return dto;
@@ -65,6 +73,7 @@ public class ProdutoMapper {
         dto.setMarca(produto.getMarca());
         dto.setPrecoAtual(produto.getPrecoAtual());
         dto.setPrecoOriginal(produto.getPrecoOriginal());
+        dto.setLinkAfiliado(produto.getLinkAfiliado());
         dto.setUrlImagem(produto.getUrlImagem());
         dto.setPlataforma(produto.getPlataforma());
         dto.setEmEstoque(produto.getEmEstoque());
@@ -89,6 +98,12 @@ public class ProdutoMapper {
         produto.setDescontoPercentual(calcularDescontoPercentual(produto.getPrecoOriginal(), produto.getPrecoAtual()));
         produto.setPlataforma(PlataformaEnum.SHOPEE);
         produto.setUltimaAtualizacao(LocalDateTime.now());
+        produto.setLinkAfiliado(linkAfiliadoService.gerarLink(
+                PlataformaEnum.SHOPEE,
+                null,
+                dto.getItemId(),
+                dto.getName()
+        ));
         return produto;
     }
 
@@ -107,6 +122,7 @@ public class ProdutoMapper {
         produto.setMarca(dto.getMarca());
         produto.setPrecoAtual(dto.getPrecoAtual());
         produto.setPrecoOriginal(dto.getPrecoOriginal());
+        produto.setLinkAfiliado(dto.getLinkAfiliado());
         produto.setEmEstoque(dto.getEmEstoque());
         produto.setDescontoPercentual(calcularDescontoPercentual(dto.getPrecoOriginal(), dto.getPrecoAtual()));
         produto.setUltimaAtualizacao(LocalDateTime.now());
@@ -131,6 +147,12 @@ public class ProdutoMapper {
         produto.setDescontoPercentual(calcularDescontoPercentual(produto.getPrecoOriginal(), produto.getPrecoAtual()));
         produto.setPlataforma(PlataformaEnum.MERCADO_LIVRE);
         produto.setUltimaAtualizacao(LocalDateTime.now());
+        produto.setLinkAfiliado(linkAfiliadoService.gerarLink(
+                PlataformaEnum.MERCADO_LIVRE,
+                dto.getPermalink(),
+                dto.getId(),
+                dto.getTitle()
+        ));
         return produto;
     }
 

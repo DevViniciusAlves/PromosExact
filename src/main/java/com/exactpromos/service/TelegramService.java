@@ -38,6 +38,27 @@ public class TelegramService {
                 .toBodilessEntity();
     }
 
+    public void enviarFotoComLegenda(String fotoUrl, String legenda) {
+        validarConfiguracao();
+
+        if (fotoUrl == null || fotoUrl.isBlank()) {
+            enviarMensagem(legenda);
+            return;
+        }
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("chat_id", telegramProperties.getChatId());
+        body.put("photo", fotoUrl);
+        body.put("caption", legenda);
+        body.put("parse_mode", "HTML");
+
+        restClient.post()
+                .uri("/bot{token}/sendPhoto", telegramProperties.getBotToken())
+                .body(body)
+                .retrieve()
+                .toBodilessEntity();
+    }
+
     private void validarConfiguracao() {
         if (telegramProperties.getBotToken() == null || telegramProperties.getBotToken().isBlank()) {
             throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Token do Telegram nao configurado");

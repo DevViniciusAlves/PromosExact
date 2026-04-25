@@ -1,6 +1,5 @@
 package com.exactpromos.service;
 
-import com.exactpromos.Enum.PlataformaEnum;
 import com.exactpromos.dto.external.MercadoLivreExternal.MercadoLivreProdutoDTO;
 import com.exactpromos.dto.request.ProdutoDTOs.ProdutoCreateDTO;
 import com.exactpromos.dto.external.ShopeeExternal.ShopeeProdutoDTO;

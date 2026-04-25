@@ -29,6 +29,8 @@ public class ProdutoResponseDTO {
 
     private Integer descontoPercentual;
 
+    private String linkAfiliado;
+
     private String urlImagem;
 
     private PlataformaEnum plataforma;

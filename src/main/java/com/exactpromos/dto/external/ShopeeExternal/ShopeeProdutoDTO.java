@@ -24,6 +24,8 @@ public class ShopeeProdutoDTO {
 
     private String image;
 
+    private String url;
+
     private Integer stock;
 
     private Double rating;

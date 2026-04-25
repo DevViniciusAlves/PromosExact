@@ -2,8 +2,8 @@ package com.exactpromos.controller;
 
 import com.exactpromos.dto.request.WachlistDTOs.WachlistCreateDTO;
 import com.exactpromos.dto.response.WachlistDTOs.WachlistResponseDTO;
-import com.exactpromos.repository.WachlistRepository;
 import com.exactpromos.service.WachlistService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,11 +14,11 @@ public class WachlistController {
 
     private final WachlistService wachlistService;
 
-    public WachlistController(WachlistService wachlistService){
+   public WachlistController(WachlistService wachlistService){
         this.wachlistService = wachlistService;
     }
    @PostMapping
-   public WachlistResponseDTO adicionarItemNaWachlist(@RequestBody WachlistCreateDTO dto){
+   public WachlistResponseDTO adicionarItemNaWachlist(@Valid @RequestBody WachlistCreateDTO dto){
         return wachlistService.adicionarItemNaWachlist(dto);
 
    }

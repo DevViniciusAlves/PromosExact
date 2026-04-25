@@ -3,8 +3,6 @@ package com.exactpromos.entity;
 
 import com.exactpromos.Enum.PlataformaEnum;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -64,8 +62,6 @@ public class Produto {
 
     private LocalDateTime ultimaAtualizacao;
 
-    private String linkAfiliadoMl = "https://www.mercadolivre.com.br/social/ferreiravinicius20220507172242";
-
-    private String linkAfiliadoShopee = "https://s.shopee.com.br/4fsWZKK8NJ";
+    private String linkAfiliado;
 
 }

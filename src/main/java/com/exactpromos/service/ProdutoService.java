@@ -53,7 +53,7 @@ public class ProdutoService {
     }
 
     private Produto salvarOuAtualizar(Produto produto) {
-        Produto existente = produtoRepository.findByProdutoId(produto.getProdutoId())
+        Produto existente = produtoRepository.findByProdutoIdAndPlataforma(produto.getProdutoId(), produto.getPlataforma())
                 .orElse(null);
         if (existente != null) {
             produto.setId(existente.getId());

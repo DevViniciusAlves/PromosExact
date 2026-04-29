@@ -42,6 +42,11 @@ import java.util.List;
 public class PromocaoService {
 
     private static final Logger log = LoggerFactory.getLogger(PromocaoService.class);
+    private static final List<PromocaoEnum> STATUS_QUE_BLOQUEIAM_DUPLICIDADE = List.of(
+            PromocaoEnum.RASCUNHO,
+            PromocaoEnum.PRONTA_PARA_ENVIO,
+            PromocaoEnum.PUBLICADA
+    );
 
     private final PromocaoRepository promocaoRepository;
     private final ProdutoRepository produtoRepository;
@@ -77,6 +82,7 @@ public class PromocaoService {
         if (produto.getLinkAfiliado() == null || produto.getLinkAfiliado().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto sem link afiliado");
         }
+        validarProdutoSemPromocaoAtiva(produto);
 
         Promocao promocao = new Promocao();
         promocao.setProduto(produto);
@@ -246,7 +252,7 @@ public class PromocaoService {
             Integer descontoPercentual = calcularDesconto(precoOriginal, precoPromocional);
 
             Produto produto = new Produto();
-            String produtoIdCurto = gerarProdutoIdCurto(url);
+            String produtoIdCurto = gerarProdutoIdCanonico(url, preview.itemId());
             produto.setProdutoId(produtoIdCurto);
             produto.setPlataforma(preview.plataforma());
             produto.setNome(nome);
@@ -269,6 +275,9 @@ public class PromocaoService {
             }
 
             Produto salvo = produtoRepository.save(produto);
+            if (produtoJaTemPromocaoAtiva(salvo)) {
+                return new PromocaoLinkResultadoDTO(url, false, "Produto ja possui promocao cadastrada", null);
+            }
 
             PromocaoCreateDTO promocaoCreateDTO = new PromocaoCreateDTO();
             promocaoCreateDTO.setProdutoId(salvo.getId());
@@ -324,6 +333,9 @@ public class PromocaoService {
             }
 
             Produto salvo = produtoRepository.save(produto);
+            if (produtoJaTemPromocaoAtiva(salvo)) {
+                return new PromocaoLoteResultadoDTO(item.getProdutoId(), false, "Produto ja possui promocao cadastrada", null);
+            }
 
             PromocaoCreateDTO promocaoCreateDTO = new PromocaoCreateDTO();
             promocaoCreateDTO.setProdutoId(salvo.getId());
@@ -338,13 +350,49 @@ public class PromocaoService {
         }
     }
 
-    private String gerarProdutoIdCurto(String url) {
-        if (url == null || url.isBlank()) {
+    private String gerarProdutoIdCanonico(String url, String itemId) {
+        if (itemId != null && !itemId.isBlank()) {
+            return itemId.trim();
+        }
+
+        String urlNormalizada = normalizarUrl(url);
+        if (urlNormalizada == null || urlNormalizada.isBlank()) {
             return "link-sem-url";
         }
 
-        String base = url.length() <= 40 ? url : url.substring(0, 40);
-        return "link-" + sha256Curto(base);
+        return "link-" + sha256Curto(urlNormalizada);
+    }
+
+    private String normalizarUrl(String url) {
+        if (url == null || url.isBlank()) {
+            return null;
+        }
+
+        try {
+            java.net.URI uri = java.net.URI.create(url);
+            StringBuilder builder = new StringBuilder();
+            if (uri.getScheme() != null) {
+                builder.append(uri.getScheme().toLowerCase(Locale.ROOT)).append("://");
+            }
+            if (uri.getHost() != null) {
+                builder.append(uri.getHost().toLowerCase(Locale.ROOT));
+            }
+            if (uri.getPath() != null) {
+                builder.append(uri.getPath());
+            }
+            return builder.toString();
+        } catch (Exception e) {
+            String limpa = url.trim().toLowerCase(Locale.ROOT);
+            int query = limpa.indexOf('?');
+            if (query >= 0) {
+                limpa = limpa.substring(0, query);
+            }
+            int fragment = limpa.indexOf('#');
+            if (fragment >= 0) {
+                limpa = limpa.substring(0, fragment);
+            }
+            return limpa;
+        }
     }
 
     private String sha256Curto(String valor) {
@@ -378,6 +426,19 @@ public class PromocaoService {
         int valorArredondado = desconto.setScale(0, RoundingMode.HALF_UP).intValue();
         return Math.max(valorArredondado, 1);
     }
+
+    private void validarProdutoSemPromocaoAtiva(Produto produto) {
+        if (produtoJaTemPromocaoAtiva(produto)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Produto ja possui promocao cadastrada");
+        }
+    }
+
+    private boolean produtoJaTemPromocaoAtiva(Produto produto) {
+        return produto != null
+                && produto.getId() != null
+                && promocaoRepository.existsByProdutoAndStatusIn(produto, STATUS_QUE_BLOQUEIAM_DUPLICIDADE);
+    }
+
     private void salvarLogNotificacao(Promocao promocao, String mensagem, boolean enviada){
         NotificacaoLog notificacaoLog = new NotificacaoLog();
         notificacaoLog.setPromocao(promocao);

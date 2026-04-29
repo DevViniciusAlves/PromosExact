@@ -58,11 +58,13 @@ public class LinkPreviewService {
     }
 
     public PreviewResultado analisar(String url) {
-        String html = buscarHtml(url);
+        PaginaCarregada pagina = buscarPagina(url);
+        String html = pagina.html();
+        String urlFinal = pagina.urlFinal();
 
-        PlataformaEnum plataforma = identificarPlataforma(url);
+        PlataformaEnum plataforma = identificarPlataforma(urlFinal);
         if (plataforma == PlataformaEnum.MERCADO_LIVRE) {
-            PreviewResultado mercadoLivre = analisarMercadoLivre(url, html);
+            PreviewResultado mercadoLivre = analisarMercadoLivre(urlFinal, html);
             if (mercadoLivre != null) {
                 return mercadoLivre;
             }
@@ -72,10 +74,10 @@ public class LinkPreviewService {
         String imagem = extrairPrimeiraString(html, IMAGE_META, JSON_LD_IMAGE);
         BigDecimal preco = extrairPreco(html);
 
-        return new PreviewResultado(plataforma, titulo, imagem, preco, preco, 0);
+        return new PreviewResultado(plataforma, null, titulo, imagem, preco, preco, 0);
     }
 
-    private String buscarHtml(String url) {
+    private PaginaCarregada buscarPagina(String url) {
         try {
             URI uri = validarUrlPermitida(url);
             HttpRequest request = HttpRequest.newBuilder()
@@ -91,7 +93,7 @@ public class LinkPreviewService {
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             validarUrlFinalPermitida(response.uri());
-            return response.body();
+            return new PaginaCarregada(response.body(), response.uri().toString());
         } catch (Exception e) {
             throw new IllegalStateException("Nao foi possivel carregar a pagina", e);
         }
@@ -169,18 +171,18 @@ public class LinkPreviewService {
     }
 
     private PreviewResultado analisarMercadoLivre(String url, String html) {
-        PreviewResultado extraidoDoHtml = extrairMercadoLivreDoHtml(html);
         String itemId = extrairMercadoLivreItemId(url, html);
+        PreviewResultado extraidoDoHtml = extrairMercadoLivreDoHtml(html, itemId);
         PreviewResultado viaApi = null;
 
         if (itemId != null) {
             viaApi = buscarMercadoLivreViaApi(itemId);
         }
 
-        return mesclarPreviewMercadoLivre(extraidoDoHtml, viaApi);
+        return mesclarPreviewMercadoLivre(itemId, extraidoDoHtml, viaApi);
     }
 
-    private PreviewResultado mesclarPreviewMercadoLivre(PreviewResultado extraidoDoHtml, PreviewResultado viaApi) {
+    private PreviewResultado mesclarPreviewMercadoLivre(String itemId, PreviewResultado extraidoDoHtml, PreviewResultado viaApi) {
         if (extraidoDoHtml == null && viaApi == null) {
             return null;
         }
@@ -229,6 +231,7 @@ public class LinkPreviewService {
 
         return new PreviewResultado(
                 PlataformaEnum.MERCADO_LIVRE,
+                primeiroNaoVazio(itemId, extraidoDoHtml != null ? extraidoDoHtml.itemId() : null, viaApi != null ? viaApi.itemId() : null),
                 titulo,
                 imagem,
                 precoPromocional,
@@ -237,7 +240,7 @@ public class LinkPreviewService {
         );
     }
 
-    private PreviewResultado extrairMercadoLivreDoHtml(String html) {
+    private PreviewResultado extrairMercadoLivreDoHtml(String html, String itemId) {
         Document document = Jsoup.parse(html == null ? "" : html);
 
         String titulo = primeiroNaoVazio(
@@ -279,7 +282,7 @@ public class LinkPreviewService {
             if (descontoPercentual == null && precoBase != null && precoFinal != null && precoBase.compareTo(precoFinal) > 0) {
                 descontoPercentual = calcularDescontoPercentual(precoBase, precoFinal);
             }
-            return new PreviewResultado(PlataformaEnum.MERCADO_LIVRE, titulo, imagem, precoFinal, precoBase, descontoPercentual);
+            return new PreviewResultado(PlataformaEnum.MERCADO_LIVRE, itemId, titulo, imagem, precoFinal, precoBase, descontoPercentual);
         }
 
         return null;
@@ -396,7 +399,7 @@ public class LinkPreviewService {
 
             BigDecimal precoBase = precoOriginal != null && precoOriginal.compareTo(preco) > 0 ? precoOriginal : preco;
             Integer descontoPercentual = calcularDescontoPercentual(precoBase, preco);
-            return new PreviewResultado(PlataformaEnum.MERCADO_LIVRE, titulo, imagem, preco, precoBase, descontoPercentual);
+            return new PreviewResultado(PlataformaEnum.MERCADO_LIVRE, itemId, titulo, imagem, preco, precoBase, descontoPercentual);
         } catch (Exception e) {
             return null;
         }
@@ -629,5 +632,7 @@ public class LinkPreviewService {
         return null;
     }
 
-    public record PreviewResultado(PlataformaEnum plataforma, String titulo, String imagem, BigDecimal preco, BigDecimal precoOriginal, Integer descontoPercentual) {}
+    private record PaginaCarregada(String html, String urlFinal) {}
+
+    public record PreviewResultado(PlataformaEnum plataforma, String itemId, String titulo, String imagem, BigDecimal preco, BigDecimal precoOriginal, Integer descontoPercentual) {}
 }
